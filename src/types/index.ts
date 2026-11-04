@@ -28,6 +28,7 @@ export interface Catalog {
   ruleVersion: string;
   expertVersion: string;
   rulesApproval: string;
+  aiProvider: 'openai' | 'groq';
   aiConfigured: boolean;
 }
 export interface User {
@@ -83,6 +84,7 @@ export interface Analysis {
   error: string | null;
   ruleVersion: string;
   expertVersion: string;
+  provider: string;
   model: string;
   createdAt: string;
 }

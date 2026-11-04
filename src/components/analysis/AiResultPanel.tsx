@@ -108,7 +108,7 @@ export function AiResultPanel({
             </div>
           )}
           <div className="analysis-meta">
-            ข้อมูลรุ่น {run.inputRevision} · OpenAI / {run.model} ·{' '}
+            ข้อมูลรุ่น {run.inputRevision} · {run.provider} / {run.model} ·{' '}
             {new Date(run.createdAt).toLocaleString('th-TH')}
           </div>
         </>

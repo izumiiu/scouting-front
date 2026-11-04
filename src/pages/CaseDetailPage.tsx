@@ -133,7 +133,7 @@ export function CaseDetailPage({
       )}
       {!catalog.aiConfigured && (
         <div className="notice warning">
-          ยังไม่ได้ตั้ง OpenAI API key/model ที่ backend
+          ยังไม่ได้ตั้ง API key/model ของบริการ AI ที่เลือกใน backend
           สามารถบันทึกข้อมูลและดูผลกฎได้ก่อน โดยยังไม่แสดงผลจำลองเป็น AI
         </div>
       )}
