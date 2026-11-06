@@ -1,6 +1,11 @@
 import type { Analysis, Catalog } from '../../types';
-import { missingInformationText, readableAnalysisText, type AnalysisContext } from '../../lib/fieldPresentation';
+import {
+  missingInformationText,
+  readableAnalysisText,
+  type AnalysisContext,
+} from '../../lib/fieldPresentation';
 import { EvidenceReferences } from './EvidenceReferences';
+import { TedAssessmentPanel } from './TedAssessmentPanel';
 import { StatusBadge } from '../common/StatusBadge';
 import { Loading } from '../common/Feedback';
 export function AiResultPanel({
@@ -20,10 +25,13 @@ export function AiResultPanel({
       run.ruleVersion !== catalog.ruleVersion ||
       run.expertVersion !== catalog.expertVersion);
   // Never compare an old run with answers entered in a later revision.
-  const missing = run?.result ? missingInformationText(
-    run.result.missingInformation, catalog,
-    run.inputRevision === revision ? context : undefined,
-  ) : [];
+  const missing = run?.result
+    ? missingInformationText(
+        run.result.missingInformation,
+        catalog,
+        !stale ? context : undefined,
+      )
+    : [];
   return (
     <section className="card ai-panel">
       <div className="section-heading inline-heading">
@@ -58,10 +66,22 @@ export function AiResultPanel({
         </div>
       ) : run.result ? (
         <>
-          <p className="ai-summary">{readableAnalysisText(run.result.summary, catalog)}</p>
+          <p className="ai-summary">
+            {readableAnalysisText(run.result.summary, catalog)}
+          </p>
+          {run.result.tedAssessment && (
+            <TedAssessmentPanel
+              assessment={run.result.tedAssessment}
+              catalog={catalog}
+            />
+          )}
           <div className="results-columns">
             <div>
-              <h3>โครงการที่แนะนำ</h3>
+              <h3>
+                {run.result.tedAssessment
+                  ? 'ข้อเสนอ UBI / TBI'
+                  : 'โครงการที่แนะนำ (ผลเดิม)'}
+              </h3>
               {run.result.programRecommendations.length === 0 ? (
                 <p className="muted">ยังไม่มีข้อเสนอที่มีหลักฐานเพียงพอ</p>
               ) : (
@@ -76,7 +96,10 @@ export function AiResultPanel({
                           ?.label ?? item.program}
                       </h4>
                       <p>{readableAnalysisText(item.reason, catalog)}</p>
-                      <EvidenceReferences refs={item.evidenceRefs} catalog={catalog} />
+                      <EvidenceReferences
+                        refs={item.evidenceRefs}
+                        catalog={catalog}
+                      />
                     </div>
                   </article>
                 ))
@@ -97,9 +120,14 @@ export function AiResultPanel({
                         {catalog.experts.find((e) => e.code === item.area)
                           ?.label ?? item.area}
                       </h4>
-                      <strong>{readableAnalysisText(item.need, catalog)}</strong>
+                      <strong>
+                        {readableAnalysisText(item.need, catalog)}
+                      </strong>
                       <p>{readableAnalysisText(item.reason, catalog)}</p>
-                      <EvidenceReferences refs={item.evidenceRefs} catalog={catalog} />
+                      <EvidenceReferences
+                        refs={item.evidenceRefs}
+                        catalog={catalog}
+                      />
                     </div>
                   </article>
                 ))
@@ -117,6 +145,9 @@ export function AiResultPanel({
             </div>
           )}
           <div className="analysis-meta">
+            {run.tedCriteriaSnapshot && (
+              <>เกณฑ์ TED: {run.tedCriteriaSnapshot.version} · </>
+            )}
             ข้อมูลรุ่น {run.inputRevision} · {run.provider} / {run.model} ·{' '}
             {new Date(run.createdAt).toLocaleString('th-TH')}
           </div>

@@ -14,7 +14,7 @@ export function GuidePage({ catalog }: { catalog: Catalog }) {
         โดยเฉพาะวันตัดคุณสมบัติและเงื่อนไขที่กำกวม
       </div>
       <section className="card guide-card">
-        <h2>5 ชุดผลคุณสมบัติ · 4 โครงการ</h2>
+        <h2>4 โครงการ · แยกผลกฎกับการจำแนก TED</h2>
         <div className="tag-list">
           {catalog.programs.map((p) => (
             <span className="badge status-draft" key={p.code}>
@@ -26,6 +26,52 @@ export function GuidePage({ catalog }: { catalog: Catalog }) {
           UBI แยก Pre-incubation กับ Startup ข้อมูลขาดแสดง “ข้อมูลไม่พอ”
           ไม่มีการปัดให้ผ่านหรือไม่ผ่านอัตโนมัติ เกณฑ์รายข้อดูได้ในหน้าเคส →
           ผลวิเคราะห์
+        </p>
+        <h3>TED IDEA / TED POC: จำแนกเบื้องต้นโดยไม่ให้คะแนน</h3>
+        <p>
+          ใช้ภาพเกณฑ์ TED Youth Startup ใหม่แทนเงื่อนไข TED เดิมทั้งหมด AI
+          วิเคราะห์จากคำตอบและสรุปหลักฐานที่บันทึกในระบบ เพื่อเสนอ IDEA, POC
+          หรือข้อมูลยังไม่พอแยกประเภท พร้อมเหตุผลเมื่อเทียบอีกประเภท ข้อจำกัด
+          และคำถามเพิ่มเติม ต้นแบบเพียงอย่างเดียวไม่ใช่ข้อสรุปว่าเป็น POC
+          และยังไม่มีรายได้ก็พิจารณาแผนรายได้แรกได้ แยกเงินสมทบ POC อย่างน้อย
+          10% เป็นเรื่องรอตรวจยืนยัน ไม่ใช้เปลี่ยนประเภทโครงการ
+          ช่องงบเดิมยังไม่ยืนยันว่าครบ 10% เจ้าหน้าที่เลือกต่างจาก AI
+          ได้โดยตรวจและบันทึกเหตุผล
+        </p>
+        {catalog.tedCriteria?.stageGuidance && (
+          <details>
+            <summary>วิธีพิจารณาระยะพัฒนาและเงื่อนไขเงินสมทบ</summary>
+            <ul>
+              {catalog.tedCriteria.stageGuidance.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <p>{catalog.tedCriteria.fundingGuidance}</p>
+          </details>
+        )}
+        {catalog.tedCriteria?.programs.map((program) => (
+          <details key={program.program}>
+            <summary>
+              {catalog.programs.find((p) => p.code === program.program)?.label}{' '}
+              · หัวข้อที่ใช้พิจารณา
+            </summary>
+            <p>{program.focus}</p>
+            {program.domains.map((domain) => (
+              <div key={domain.label}>
+                <h4>{domain.label}</h4>
+                <ul>
+                  {domain.considerations.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </details>
+        ))}
+        <p className="muted">
+          ไม่มีคะแนนหรือเส้นผ่าน เกณฑ์นี้ใช้ประกอบการจำแนกคร่าว ๆ
+          ไม่ใช่การตรวจสิทธิ์ทุนครบถ้วน ระบบไม่อ่านไฟล์ Word/PDF หรือ Google
+          Sheet โดยอัตโนมัติ และไม่เรียกวิเคราะห์ใหม่เมื่อเกณฑ์เปลี่ยน
         </p>
         <h3>สาขาผู้เชี่ยวชาญ</h3>
         <p>
@@ -46,6 +92,12 @@ export function GuidePage({ catalog }: { catalog: Catalog }) {
         </p>
         <small className="muted">
           รุ่นกฎ: {catalog.ruleVersion}
+          {catalog.tedCriteria && (
+            <>
+              <br />
+              รุ่นเกณฑ์ TED: {catalog.tedCriteria.version}
+            </>
+          )}
           <br />
           รุ่นตารางผู้เชี่ยวชาญ: {catalog.expertVersion}
         </small>

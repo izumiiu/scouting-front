@@ -3,8 +3,12 @@ import type { CaseDetail, Catalog, AuditEvent } from '../../types';
 import { api, errorMessage } from '../../lib/api';
 import { ErrorNotice } from '../common/Feedback';
 import { StatusBadge } from '../common/StatusBadge';
-import { missingInformationText, readableAnalysisText } from '../../lib/fieldPresentation';
+import {
+  missingInformationText,
+  readableAnalysisText,
+} from '../../lib/fieldPresentation';
 import { EvidenceReferences } from '../analysis/EvidenceReferences';
+import { TedAssessmentPanel } from '../analysis/TedAssessmentPanel';
 export function HistoryPanel({
   detail,
   catalog,
@@ -89,35 +93,68 @@ export function HistoryPanel({
                 {new Date(run.createdAt).toLocaleString('th-TH')}
               </span>
             </summary>
-            <p>{readableAnalysisText(run.result?.summary ?? run.error ?? 'กำลังรอผล', catalog)}</p>
+            <p>
+              {readableAnalysisText(
+                run.result?.summary ?? run.error ?? 'กำลังรอผล',
+                catalog,
+              )}
+            </p>
             {run.result && (
               <>
+                {run.result.tedAssessment && (
+                  <TedAssessmentPanel
+                    assessment={run.result.tedAssessment}
+                    catalog={catalog}
+                  />
+                )}
                 <h4>โครงการที่ AI เสนอ</h4>
                 {run.result.programRecommendations.map((p) => (
                   <div key={p.program}>
-                    <p>{catalog.programs.find((program) => program.code === p.program)?.label ?? p.program}: {readableAnalysisText(p.reason, catalog)}</p>
-                    <EvidenceReferences refs={p.evidenceRefs} catalog={catalog} />
+                    <p>
+                      {catalog.programs.find(
+                        (program) => program.code === p.program,
+                      )?.label ?? p.program}
+                      : {readableAnalysisText(p.reason, catalog)}
+                    </p>
+                    <EvidenceReferences
+                      refs={p.evidenceRefs}
+                      catalog={catalog}
+                    />
                   </div>
                 ))}
                 <h4>สาขาที่ AI เสนอ</h4>
                 {run.result.expertRecommendations.map((p) => (
                   <div key={p.area}>
-                    <p>{catalog.experts.find((e) => e.code === p.area)?.label}: {readableAnalysisText(p.reason, catalog)}</p>
-                    <EvidenceReferences refs={p.evidenceRefs} catalog={catalog} />
+                    <p>
+                      {catalog.experts.find((e) => e.code === p.area)?.label}:{' '}
+                      {readableAnalysisText(p.reason, catalog)}
+                    </p>
+                    <EvidenceReferences
+                      refs={p.evidenceRefs}
+                      catalog={catalog}
+                    />
                   </div>
                 ))}
                 {run.result.missingInformation.length > 0 && (
                   <div className="missing-info">
                     <h4>ข้อมูลที่ควรถามหรือตรวจเพิ่มเติม ณ รอบวิเคราะห์นั้น</h4>
-                    <ul>{missingInformationText(run.result.missingInformation, catalog).map((question) => (
-                      <li key={question}>{question}</li>
-                    ))}</ul>
+                    <ul>
+                      {missingInformationText(
+                        run.result.missingInformation,
+                        catalog,
+                      ).map((question) => (
+                        <li key={question}>{question}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </>
             )}
             <small className="muted">
               {run.ruleVersion} · {run.expertVersion} · {run.model}
+              {run.tedCriteriaSnapshot && (
+                <> · เกณฑ์ TED {run.tedCriteriaSnapshot.version}</>
+              )}
             </small>
           </details>
         ))}

@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import type { Analysis, CaseDetail, Catalog } from '../../types';
 import { api, mutation, errorMessage } from '../../lib/api';
 import { ErrorNotice } from '../common/Feedback';
+import { canSelectDestination } from '../../lib/reviewOptions';
 export function HumanReviewForm({
   detail,
   run,
@@ -72,14 +73,23 @@ export function HumanReviewForm({
               <option
                 key={p.program}
                 value={p.program}
-                disabled={p.outcome !== 'pass'}
+                disabled={!canSelectDestination(p, run)}
               >
                 {p.label}
-                {p.outcome === 'pass' ? '' : ' — ยังไม่ผ่านหรือข้อมูลไม่พอ'}
+                {p.assessmentMode === 'qualitative'
+                  ? ' — เจ้าหน้าที่พิจารณาจากเกณฑ์ใหม่'
+                  : p.outcome === 'pass'
+                    ? ''
+                    : ' — ยังไม่ผ่านหรือข้อมูลไม่พอ'}
               </option>
             ))}
           </select>
         </label>
+        <p className="muted">
+          TED เลือกต่างจากข้อเสนอ AI ได้ รวมถึงกรณี AI ยังแยกประเภทไม่ได้
+          เมื่อเจ้าหน้าที่ตรวจและบันทึกเหตุผลแล้ว ส่วน UBI/TBI
+          ต้องผ่านกฎก่อนส่งต่อ
+        </p>
         <fieldset className="field">
           <legend>สาขาผู้เชี่ยวชาญที่เจ้าหน้าที่ยืนยัน</legend>
           <div className="expert-checkboxes">

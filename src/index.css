@@ -1504,3 +1504,6 @@ footer {
 .condition-follow-up ul { margin: 6px 0 0; padding-left: 20px; }
 .condition-follow-up li { margin-bottom: 5px; overflow-wrap: anywhere; }
 .condition small { overflow-wrap: anywhere; }
+
+.ted-assessment { padding: 1.5rem; border-bottom: 1px solid var(--border, #e6e7de); }
+.ted-assessment p { white-space: pre-wrap; overflow-wrap: anywhere; }
