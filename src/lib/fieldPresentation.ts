@@ -200,7 +200,7 @@ function codeList(text: string, catalog: Fields): string[] | null {
     : null;
 }
 
-export function missingInformationText(
+export function aiFollowUpText(
   items: string[],
   catalog: Fields,
   context?: AnalysisContext,
@@ -233,6 +233,14 @@ export function missingInformationText(
         })
       : [readableAnalysisText(item, catalog)];
   });
+  return [...new Set(questions)];
+}
+
+// Retain the flat legacy API for callers/tests that still need a combined list.
+export function missingInformationText(
+  items: string[], catalog: Fields, context?: AnalysisContext,
+): string[] {
+  const questions = aiFollowUpText(items, catalog, context);
   if (context) {
     for (const program of context.eligibility) {
       // A failed route does not create new requests for its other prerequisites.

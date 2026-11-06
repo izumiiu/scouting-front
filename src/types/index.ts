@@ -103,7 +103,10 @@ export interface TedCriteria {
     domains: { label: string; considerations: string[] }[];
   }[];
 }
+export type FollowUpScope = 'TED' | 'TED_IDEA' | 'TED_POC' | 'TED_POC_FUNDING' | 'UBI_PRE' | 'UBI_STARTUP' | 'TBI' | 'DEVELOPMENT';
+export interface AiFollowUp { scope: FollowUpScope; question: string; }
 export interface AiResult {
+  followUps?: AiFollowUp[];
   tedAssessment?: TedAssessment;
   summary: string;
   programRecommendations: {

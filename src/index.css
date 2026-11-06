@@ -1507,3 +1507,13 @@ footer {
 
 .ted-assessment { padding: 1.5rem; border-bottom: 1px solid var(--border, #e6e7de); }
 .ted-assessment p { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.follow-up-panel .follow-up-intro,
+.follow-up-panel .follow-up-description { font-size: .9rem; line-height: 1.6; }
+.follow-up-group { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid rgba(160, 124, 65, .25); }
+.follow-up-group h4 { margin: 0 0 .35rem; color: var(--ink, #283b36); }
+.follow-up-group li { margin: 1rem 0; overflow-wrap: anywhere; }
+.follow-up-group li p { margin: 0 0 .4rem; white-space: pre-wrap; }
+.follow-up-tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.follow-up-tag { display: inline-block; padding: .15rem .5rem; border: 1px solid rgba(160, 124, 65, .3); border-radius: .35rem; font-size: .75rem; color: var(--ink, #283b36); }
+.follow-up-condition { display: block; margin-top: .4rem; }

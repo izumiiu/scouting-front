@@ -4,11 +4,11 @@ import { api, errorMessage } from '../../lib/api';
 import { ErrorNotice } from '../common/Feedback';
 import { StatusBadge } from '../common/StatusBadge';
 import {
-  missingInformationText,
   readableAnalysisText,
 } from '../../lib/fieldPresentation';
 import { EvidenceReferences } from '../analysis/EvidenceReferences';
 import { TedAssessmentPanel } from '../analysis/TedAssessmentPanel';
+import { FollowUpPanel } from '../analysis/FollowUpPanel';
 export function HistoryPanel({
   detail,
   catalog,
@@ -135,19 +135,7 @@ export function HistoryPanel({
                     />
                   </div>
                 ))}
-                {run.result.missingInformation.length > 0 && (
-                  <div className="missing-info">
-                    <h4>ข้อมูลที่ควรถามหรือตรวจเพิ่มเติม ณ รอบวิเคราะห์นั้น</h4>
-                    <ul>
-                      {missingInformationText(
-                        run.result.missingInformation,
-                        catalog,
-                      ).map((question) => (
-                        <li key={question}>{question}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <FollowUpPanel result={run.result} catalog={catalog} historical />
               </>
             )}
             <small className="muted">

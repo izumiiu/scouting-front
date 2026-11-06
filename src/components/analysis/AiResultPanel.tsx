@@ -1,11 +1,11 @@
 import type { Analysis, Catalog } from '../../types';
 import {
-  missingInformationText,
   readableAnalysisText,
   type AnalysisContext,
 } from '../../lib/fieldPresentation';
 import { EvidenceReferences } from './EvidenceReferences';
 import { TedAssessmentPanel } from './TedAssessmentPanel';
+import { FollowUpPanel } from './FollowUpPanel';
 import { StatusBadge } from '../common/StatusBadge';
 import { Loading } from '../common/Feedback';
 export function AiResultPanel({
@@ -24,14 +24,6 @@ export function AiResultPanel({
     (run.inputRevision !== revision ||
       run.ruleVersion !== catalog.ruleVersion ||
       run.expertVersion !== catalog.expertVersion);
-  // Never compare an old run with answers entered in a later revision.
-  const missing = run?.result
-    ? missingInformationText(
-        run.result.missingInformation,
-        catalog,
-        !stale ? context : undefined,
-      )
-    : [];
   return (
     <section className="card ai-panel">
       <div className="section-heading inline-heading">
@@ -134,16 +126,7 @@ export function AiResultPanel({
               )}
             </div>
           </div>
-          {missing.length > 0 && (
-            <div className="missing-info">
-              <h3>ข้อมูลที่ควรถามหรือตรวจเพิ่มเติม</h3>
-              <ul>
-                {missing.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <FollowUpPanel result={run.result} catalog={catalog} context={!stale ? context : undefined} historical={Boolean(stale)} />
           <div className="analysis-meta">
             {run.tedCriteriaSnapshot && (
               <>เกณฑ์ TED: {run.tedCriteriaSnapshot.version} · </>
