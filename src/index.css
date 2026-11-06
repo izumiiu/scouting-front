@@ -1498,3 +1498,9 @@ footer {
     scroll-behavior: auto !important;
   }
 }
+
+.condition-follow-up { margin-top: 10px; font-size: 13px; }
+.condition-follow-up strong { font-weight: 600; }
+.condition-follow-up ul { margin: 6px 0 0; padding-left: 20px; }
+.condition-follow-up li { margin-bottom: 5px; overflow-wrap: anywhere; }
+.condition small { overflow-wrap: anywhere; }

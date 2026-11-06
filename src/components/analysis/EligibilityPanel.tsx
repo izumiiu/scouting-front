@@ -1,6 +1,12 @@
-import type { Eligibility } from '../../types';
+import type { Catalog, CaseInput, Eligibility } from '../../types';
+import { conditionFollowUps, readableAnalysisText } from '../../lib/fieldPresentation';
+import { EvidenceReferences } from './EvidenceReferences';
 import { StatusBadge } from '../common/StatusBadge';
-export function EligibilityPanel({ results }: { results: Eligibility[] }) {
+export function EligibilityPanel({ results, catalog, answers }: {
+  results: Eligibility[];
+  catalog: Catalog;
+  answers: CaseInput['answers'];
+}) {
   return (
     <section className="card eligibility-panel">
       <div className="section-heading">
@@ -23,12 +29,20 @@ export function EligibilityPanel({ results }: { results: Eligibility[] }) {
                 <div className="condition" key={condition.id}>
                   <StatusBadge status={condition.outcome} />
                   <div>
-                    <p>{condition.label}</p>
-                    <small className="muted">
-                      อ้างอิง {condition.evidenceRefs.join(', ')}
-                    </small>
+                    <p>{readableAnalysisText(condition.label, catalog)}</p>
+                    <EvidenceReferences refs={condition.evidenceRefs} catalog={catalog} />
+                    {condition.outcome === 'unknown' && (
+                      <div className="condition-follow-up">
+                        <strong>สิ่งที่ต้องถามหรือตรวจเพิ่ม</strong>
+                        <ul>
+                          {conditionFollowUps(condition, catalog, answers).map((question) => (
+                            <li key={question}>{question}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                     {condition.note && (
-                      <small className="condition-note">{condition.note}</small>
+                      <small className="condition-note">หมายเหตุเกณฑ์: {readableAnalysisText(condition.note, catalog)}</small>
                     )}
                   </div>
                 </div>

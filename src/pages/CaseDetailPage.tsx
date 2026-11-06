@@ -193,7 +193,7 @@ export function CaseDetailPage({
             เกณฑ์อ้างอิงและตารางสาขาเป็นร่างรอ PM รับรอง
             ผลตรวจไม่ใช่การอนุมัติทุน
           </div>
-          <EligibilityPanel results={detail.eligibility} />
+          <EligibilityPanel results={detail.eligibility} catalog={catalog} answers={record.input.answers} />
           <div className="group-context">
             <strong>บริบทสาขาผู้เชี่ยวชาญ:</strong>{' '}
             {detail.groupContext.group ?? 'ยังยืนยันกลุ่มไม่ได้'}
@@ -205,6 +205,7 @@ export function CaseDetailPage({
             run={run}
             catalog={catalog}
             revision={record.revision}
+            context={{ answers: record.input.answers, eligibility: run?.eligibility ?? detail.eligibility }}
           />
           {current && run ? (
             <HumanReviewForm

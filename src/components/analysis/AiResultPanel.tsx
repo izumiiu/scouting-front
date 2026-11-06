@@ -1,20 +1,29 @@
 import type { Analysis, Catalog } from '../../types';
+import { missingInformationText, readableAnalysisText, type AnalysisContext } from '../../lib/fieldPresentation';
+import { EvidenceReferences } from './EvidenceReferences';
 import { StatusBadge } from '../common/StatusBadge';
 import { Loading } from '../common/Feedback';
 export function AiResultPanel({
   run,
   catalog,
   revision,
+  context,
 }: {
   run: Analysis | undefined;
   catalog: Catalog;
   revision: number;
+  context?: AnalysisContext;
 }) {
   const stale =
     run &&
     (run.inputRevision !== revision ||
       run.ruleVersion !== catalog.ruleVersion ||
       run.expertVersion !== catalog.expertVersion);
+  // Never compare an old run with answers entered in a later revision.
+  const missing = run?.result ? missingInformationText(
+    run.result.missingInformation, catalog,
+    run.inputRevision === revision ? context : undefined,
+  ) : [];
   return (
     <section className="card ai-panel">
       <div className="section-heading inline-heading">
@@ -49,7 +58,7 @@ export function AiResultPanel({
         </div>
       ) : run.result ? (
         <>
-          <p className="ai-summary">{run.result.summary}</p>
+          <p className="ai-summary">{readableAnalysisText(run.result.summary, catalog)}</p>
           <div className="results-columns">
             <div>
               <h3>โครงการที่แนะนำ</h3>
@@ -66,8 +75,8 @@ export function AiResultPanel({
                         {catalog.programs.find((p) => p.code === item.program)
                           ?.label ?? item.program}
                       </h4>
-                      <p>{item.reason}</p>
-                      <small>อ้างอิง: {item.evidenceRefs.join(', ')}</small>
+                      <p>{readableAnalysisText(item.reason, catalog)}</p>
+                      <EvidenceReferences refs={item.evidenceRefs} catalog={catalog} />
                     </div>
                   </article>
                 ))
@@ -88,20 +97,20 @@ export function AiResultPanel({
                         {catalog.experts.find((e) => e.code === item.area)
                           ?.label ?? item.area}
                       </h4>
-                      <strong>{item.need}</strong>
-                      <p>{item.reason}</p>
-                      <small>อ้างอิง: {item.evidenceRefs.join(', ')}</small>
+                      <strong>{readableAnalysisText(item.need, catalog)}</strong>
+                      <p>{readableAnalysisText(item.reason, catalog)}</p>
+                      <EvidenceReferences refs={item.evidenceRefs} catalog={catalog} />
                     </div>
                   </article>
                 ))
               )}
             </div>
           </div>
-          {run.result.missingInformation.length > 0 && (
+          {missing.length > 0 && (
             <div className="missing-info">
-              <h3>ข้อมูลที่ควรถามเพิ่มเติม</h3>
+              <h3>ข้อมูลที่ควรถามหรือตรวจเพิ่มเติม</h3>
               <ul>
-                {run.result.missingInformation.map((item, index) => (
+                {missing.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>

@@ -78,6 +78,7 @@ export interface AiResult {
 }
 export interface Analysis {
   _id: string;
+  eligibility?: Eligibility[];
   inputRevision: number;
   status: 'queued' | 'running' | 'succeeded' | 'failed';
   result: AiResult | null;
